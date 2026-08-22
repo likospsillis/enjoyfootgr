@@ -245,11 +245,11 @@ async function refreshAuth(){
    profile.position=p.primary_position||"CM";profile.foot=p.preferred_foot||"Δεξί";profile.rating=p.overall||50;profile.photo=p.avatar_url||"";
    profile.stats={PAC:p.pac||50,SHO:p.sho||50,PAS:p.pas||50,DRI:p.dri||50,DEF:p.def||50,PHY:p.phy||50};
   }
-  document.getElementById("authUser")?.textContent="👤 "+profile.name; document.getElementById("topProfileName")?.textContent=profile.name;
+  if(document.getElementById("authUser")) document.getElementById("authUser").textContent="👤 "+profile.name; if(document.getElementById("topProfileName")) document.getElementById("topProfileName").textContent=profile.name;
   document.getElementById("authBtn").textContent="🚪 Αποσύνδεση";
   document.getElementById("authBtn").onclick=logout;
  }else{
-  document.getElementById("authUser")?.textContent="Δεν έχεις συνδεθεί"; document.getElementById("topProfileName")?.textContent="Προφίλ";
+  if(document.getElementById("authUser")) document.getElementById("authUser").textContent="Δεν έχεις συνδεθεί"; if(document.getElementById("topProfileName")) document.getElementById("topProfileName").textContent="Προφίλ";
   document.getElementById("authBtn").textContent="🔐 Εγγραφή / Σύνδεση";
   document.getElementById("authBtn").onclick=openAuth;
  }
@@ -391,4 +391,5 @@ populateAreas();
 refreshAuth().then(loadGames);
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
 </script>
+<!-- enjoyfootgr v2.1 fixed -->
 </body></html>
