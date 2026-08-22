@@ -41,22 +41,49 @@ input,select,textarea{background:#121b31;border:1px solid #30405f;color:#fff;pad
 .chat{display:grid;gap:8px;margin:12px 0}.msg{padding:9px 12px;border-radius:12px;background:#1b2944;max-width:85%}.msg.me{margin-left:auto;background:#244c35}.chatinput{display:flex;gap:8px}.chatinput input{flex:1}.notif{background:#243653;border-radius:10px;padding:10px;margin:7px 0}
 
 .authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.userpill{background:#1c2a43;padding:8px 11px;border-radius:10px;font-size:13px}.authstatus{margin-top:10px;color:#aebbd1}.error{background:#4b1f27;color:#ffd9de;padding:10px;border-radius:10px}.success{background:#183a27;color:#d9ffe7;padding:10px;border-radius:10px}
+
+
+.topnav{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.profileBtn{background:#53e36b;color:#07120a;border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}
+.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:26px}
+.filterbar{background:#101a2e;border:1px solid #263653;border-radius:16px;padding:14px}
+.filterlabel{font-size:12px;color:#91a0b9;font-weight:800;margin-bottom:6px;display:block}
+.dateTimeRow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pickerField{position:relative}
+.pickerField input{width:100%;font-size:16px;min-height:48px}
+.pickerHint{font-size:12px;color:#91a0b9;margin-top:4px}
+@media(max-width:720px){header{align-items:flex-start;gap:12px}.topnav{width:100%}.topnav button{flex:1;min-width:110px}.dateTimeRow{grid-template-columns:1fr}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
-<header><div class="logo">⚽ enjoy<span>footgr</span></div><button class="ghost" onclick="openProfile()">👤 Το προφίλ μου</button></header>
+<header>
+  <div class="logo">⚽ enjoy<span>footgr</span></div>
+  <div class="topnav">
+    <button class="ghost" onclick="openCreate()">＋ Αγγελία</button>
+    <button class="ghost" onclick="showPlayers()">👥 Παίκτες</button>
+    <button class="ghost" onclick="showMyApplications()">📩 Αιτήματα</button>
+    <button class="profileBtn" onclick="openProfile()">👤 <span id="topProfileName">Προφίλ</span></button>
+  </div>
+</header>
 <main>
 <section class="hero">
 <h1>Βρες παίκτη. Φτιάξε ομάδα. Παίξε στο enjoyfootgr.</h1>
-<p>Αγγελίες για 5x5, 7x7 και 11x11 — με πραγματικά γήπεδα και προφίλ παικτών σε στυλ FIFA.</p>
+<p>Αγγελίες για 5x5, 7x7 και 11x11 — με πραγματικά γήπεδα και προφίλ παικτών.</p>
 <div class="actions"><button class="primary" onclick="openCreate()">＋ Δημιούργησε αγγελία</button><button class="ghost" onclick="showPlayers()">👥 Βρες παίκτη</button><button class="ghost" onclick="showMyApplications()">📩 Τα αιτήματά μου</button></div>
 </section>
+<div class="filterbar">
 <div class="filters">
 <select id="formatFilter" onchange="renderGames()"><option value="">⚽ Όλα τα formats</option><option value="5x5">5x5</option><option value="7x7">7x7</option><option value="11x11">11x11</option></select>
 <div class="areaSearchWrap"><input id="areaSearch" placeholder="📍 Γράψε περιοχή ή πόλη..." oninput="filterAreas()"><select id="areaFilter" onchange="renderGames()"><option value="">📍 Όλη η Ελλάδα</option></select></div>
-<select id="positionFilter" onchange="renderGames()"><option value="">Όλες οι θέσεις</option><option>GK</option><option>CB</option><option>LB</option><option>RB</option><option>CDM</option><option>CM</option><option>CAM</option><option>LM</option><option>RM</option><option>LW</option><option>RW</option><option>ST</option></select>
-<input id="search" placeholder="🔎 Περιοχή / θέση / γήπεδο" oninput="renderGames()"></div>
-<h2>🔥 Διαθέσιμα παιχνίδια</h2><div id="games" class="grid"></div>
+<select id="positionFilter" onchange="renderGames()"><option value="">Όλες οι θέσεις</option>
+<option value="GK">Τερματοφύλακας · GK</option><option value="CB">Στόπερ · CB</option>
+<option value="LB">Αριστερό Μπακ · LB</option><option value="RB">Δεξί Μπακ · RB</option>
+<option value="CDM">Αμυντικό Χαφ · CDM</option><option value="CM">Κεντρικό Χαφ · CM</option>
+<option value="CAM">Μεσοεπιθετικός · CAM</option><option value="LM">Αριστερό Χαφ · LM</option>
+<option value="RM">Δεξί Χαφ · RM</option><option value="LW">Αριστερό Εξτρέμ · LW</option>
+<option value="RW">Δεξί Εξτρέμ · RW</option><option value="ST">Σέντερ Φορ · ST</option></select>
+<input id="search" placeholder="🔎 Περιοχή / θέση / γήπεδο" oninput="renderGames()"></div></div>
+<div class="sectionTitle"><h2>🔥 Διαθέσιμα παιχνίδια</h2><button class="ghost" onclick="openCreate()">＋ Νέα αγγελία</button></div><div id="games" class="grid"></div>
 </main>
 
 <div class="modal" id="modal"><div class="modalbox" id="modalContent"></div></div>
@@ -101,14 +128,34 @@ function renderGames(){
 }
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openCreate(){
- document.getElementById('modalContent').innerHTML=`<h2>＋ Νέα αγγελία</h2><div class="form">
-<select id="format" onchange="updateMax()"><option value="5x5">⚽ 5x5 — 10 παίκτες</option><option value="7x7">⚽ 7x7 — 14 παίκτες</option><option value="11x11">⚽ 11x11 — 22 παίκτες</option></select>
-<input id="fieldSearch" placeholder="🔎 Ψάξε γήπεδο στην περιοχή..." oninput="searchFields()"><select id="field" onchange="syncField()"><option value="custom">➕ Άλλο / γράψε γήπεδο</option><option value="Champions Club 5x5 7x7|Ευίας 6, Γέρακας|https://www.google.com/maps/search/?api=1&query=Champions+Club+5x5+7x7+Gerakas">Champions Club 5x5 7x7 — Γέρακας</option><option value="SOCCER ACTION|Χατζηανέστη 31, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=SOCCER+ACTION+Rentis">SOCCER ACTION — Ρέντης</option><option value="Renti Arena|Αγίας Άννης 46, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=Renti+Arena+Agias+Annis+46+Rentis">Renti Arena — Ρέντης</option><option value="AFC Chalandri|Εριφύλης 9, Χαλάνδρι|https://www.google.com/maps/search/?api=1&query=AFC+Chalandri+Erifilis+9">AFC Chalandri — Χαλάνδρι</option><option value="Ολυμπιακό Στάδιο|Λεωφ. Ολυμπιονίκου Σπύρου Λούη 1, Μαρούσι|https://www.google.com/maps/search/?api=1&query=Olympic+Stadium+Athens">Ολυμπιακό Στάδιο — Μαρούσι</option></select>
-<input id="area" placeholder="Περιοχή" value="Καλλιθέα"><input id="place" placeholder="Γήπεδο" value="Athens Football Arena">
-<div class="row"><input id="date" placeholder="Ημερομηνία"><input id="time" placeholder="Ώρα"></div>
-<div class="row"><select id="need"><option value="GK">Τερματοφύλακας</option><option value="CB">Στόπερ</option><option value="LB">Αριστερό Μπακ</option><option value="RB">Δεξί Μπακ</option><option value="CDM">Αμυντικό Χαφ</option><option value="CM" selected>Κεντρικό Χαφ</option><option value="CAM">Μεσοεπιθετικός</option><option value="LM">Αριστερό Χαφ</option><option value="RM">Δεξί Χαφ</option><option value="LW">Αριστερό Εξτρέμ</option><option value="RW">Δεξί Εξτρέμ</option><option value="ST">Σέντερ Φορ</option></select><input id="cost" placeholder="Κόστος" value="7€"></div>
-<textarea id="desc" placeholder="Τι παίκτη ψάχνεις;"></textarea><div id="maxInfo" class="notice">Χωρητικότητα: 10 παίκτες</div>
-<div class="actions"><button class="primary" onclick="createGame()">Δημοσίευση</button><button class="ghost" onclick="closeModal()">Άκυρο</button></div></div>`;document.getElementById('modal').classList.add('show');
+ const today=new Date();
+ const yyyy=today.getFullYear(), mm=String(today.getMonth()+1).padStart(2,"0"), dd=String(today.getDate()).padStart(2,"0");
+ document.getElementById('modalContent').innerHTML=`<h2>＋ Νέα αγγελία</h2>
+ <div class="form">
+ <label class="filterlabel">Τύπος παιχνιδιού</label>
+ <select id="format" onchange="updateMax()"><option value="5x5">⚽ 5x5 — 10 παίκτες</option><option value="7x7">⚽ 7x7 — 14 παίκτες</option><option value="11x11">⚽ 11x11 — 22 παίκτες</option></select>
+
+ <label class="filterlabel">📍 Γήπεδο</label>
+ <input id="fieldSearch" placeholder="🔎 Ψάξε γήπεδο..." oninput="searchFields()">
+ <select id="field" onchange="syncField()"><option value="custom">➕ Άλλο / γράψε γήπεδο</option>
+ <option value="Champions Club 5x5 7x7|Ευίας 6, Γέρακας|https://www.google.com/maps/search/?api=1&query=Champions+Club+5x5+7x7+Gerakas">Champions Club 5x5 7x7 — Γέρακας</option>
+ <option value="SOCCER ACTION|Χατζηανέστη 31, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=SOCCER+ACTION+Rentis">SOCCER ACTION — Ρέντης</option>
+ <option value="Renti Arena|Αγίας Άννης 46, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=Renti+Arena+Agias+Annis+46+Rentis">Renti Arena — Ρέντης</option>
+ <option value="AFC Chalandri|Εριφύλης 9, Χαλάνδρι|https://www.google.com/maps/search/?api=1&query=AFC+Chalandri+Erifilis+9">AFC Chalandri — Χαλάνδρι</option>
+ <option value="Ολυμπιακό Στάδιο|Λεωφ. Ολυμπιονίκου Σπύρου Λούη 1, Μαρούσι|https://www.google.com/maps/search/?api=1&query=Olympic+Stadium+Athens">Ολυμπιακό Στάδιο — Μαρούσι</option></select>
+ <input id="area" placeholder="Περιοχή / πόλη" value="Καλλιθέα"><input id="place" placeholder="Όνομα γηπέδου" value="Athens Football Arena">
+
+ <div class="dateTimeRow">
+   <div class="pickerField"><label class="filterlabel">📅 Ημερομηνία παιχνιδιού</label><input id="date" type="date" min="${yyyy}-${mm}-${dd}"><div class="pickerHint">Πάτησε για να ανοίξει ημερολόγιο</div></div>
+   <div class="pickerField"><label class="filterlabel">🕐 Ώρα έναρξης</label><input id="time" type="time" step="900"><div class="pickerHint">Πάτησε για να ανοίξει ρολόι</div></div>
+ </div>
+
+ <div class="row"><select id="need"><option value="GK">Τερματοφύλακας · GK</option><option value="CB">Στόπερ · CB</option><option value="LB">Αριστερό Μπακ · LB</option><option value="RB">Δεξί Μπακ · RB</option><option value="CDM">Αμυντικό Χαφ · CDM</option><option value="CM" selected>Κεντρικό Χαφ · CM</option><option value="CAM">Μεσοεπιθετικός · CAM</option><option value="LM">Αριστερό Χαφ · LM</option><option value="RM">Δεξί Χαφ · RM</option><option value="LW">Αριστερό Εξτρέμ · LW</option><option value="RW">Δεξί Εξτρέμ · RW</option><option value="ST">Σέντερ Φορ · ST</option></select><input id="cost" type="number" min="0" step="0.5" placeholder="Κόστος ανά παίκτη (€)" value="7"></div>
+ <textarea id="desc" placeholder="Περιγραφή αγγελίας: τι παίκτη ψάχνεις, επίπεδο, κανόνες κλπ."></textarea>
+ <div id="maxInfo" class="notice">Χωρητικότητα: 10 παίκτες</div>
+ <div class="actions"><button class="primary" onclick="createGame()">📢 Δημοσίευση αγγελίας</button><button class="ghost" onclick="closeModal()">Άκυρο</button></div>
+ </div>`;
+ document.getElementById('date').value=`${yyyy}-${mm}-${dd}`; document.getElementById('time').value='20:00'; document.getElementById('modal').classList.add('show');
 }
 function searchFields(){
  const q=(document.getElementById("fieldSearch").value||"").toLowerCase();
@@ -198,11 +245,11 @@ async function refreshAuth(){
    profile.position=p.primary_position||"CM";profile.foot=p.preferred_foot||"Δεξί";profile.rating=p.overall||50;profile.photo=p.avatar_url||"";
    profile.stats={PAC:p.pac||50,SHO:p.sho||50,PAS:p.pas||50,DRI:p.dri||50,DEF:p.def||50,PHY:p.phy||50};
   }
-  document.getElementById("authUser").textContent="👤 "+profile.name;
+  document.getElementById("authUser")?.textContent="👤 "+profile.name; document.getElementById("topProfileName")?.textContent=profile.name;
   document.getElementById("authBtn").textContent="🚪 Αποσύνδεση";
   document.getElementById("authBtn").onclick=logout;
  }else{
-  document.getElementById("authUser").textContent="Δεν έχεις συνδεθεί";
+  document.getElementById("authUser")?.textContent="Δεν έχεις συνδεθεί"; document.getElementById("topProfileName")?.textContent="Προφίλ";
   document.getElementById("authBtn").textContent="🔐 Εγγραφή / Σύνδεση";
   document.getElementById("authBtn").onclick=openAuth;
  }
