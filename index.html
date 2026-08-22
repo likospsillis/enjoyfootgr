@@ -42,7 +42,18 @@ input,select,textarea{background:#121b31;border:1px solid #30405f;color:#fff;pad
 
 .authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.userpill{background:#1c2a43;padding:8px 11px;border-radius:10px;font-size:13px}.authstatus{margin-top:10px;color:#aebbd1}.error{background:#4b1f27;color:#ffd9de;padding:10px;border-radius:10px}.success{background:#183a27;color:#d9ffe7;padding:10px;border-radius:10px}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* enjoyfootgr stable form polish */
+.form input[type="date"], .form input[type="time"]{
+  min-height:46px; cursor:pointer; font-size:16px;
+}
+.form input[type="date"]::-webkit-calendar-picker-indicator,
+.form input[type="time"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.9}
+.create-date-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.create-date-row{grid-template-columns:1fr}}
+</style>
+</head>
 <body>
 <header><div class="logo">⚽ enjoy<span>footgr</span></div><button class="ghost" onclick="openProfile()">👤 Το προφίλ μου</button></header>
 <main>
@@ -105,7 +116,7 @@ function openCreate(){
 <select id="format" onchange="updateMax()"><option value="5x5">⚽ 5x5 — 10 παίκτες</option><option value="7x7">⚽ 7x7 — 14 παίκτες</option><option value="11x11">⚽ 11x11 — 22 παίκτες</option></select>
 <input id="fieldSearch" placeholder="🔎 Ψάξε γήπεδο στην περιοχή..." oninput="searchFields()"><select id="field" onchange="syncField()"><option value="custom">➕ Άλλο / γράψε γήπεδο</option><option value="Champions Club 5x5 7x7|Ευίας 6, Γέρακας|https://www.google.com/maps/search/?api=1&query=Champions+Club+5x5+7x7+Gerakas">Champions Club 5x5 7x7 — Γέρακας</option><option value="SOCCER ACTION|Χατζηανέστη 31, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=SOCCER+ACTION+Rentis">SOCCER ACTION — Ρέντης</option><option value="Renti Arena|Αγίας Άννης 46, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=Renti+Arena+Agias+Annis+46+Rentis">Renti Arena — Ρέντης</option><option value="AFC Chalandri|Εριφύλης 9, Χαλάνδρι|https://www.google.com/maps/search/?api=1&query=AFC+Chalandri+Erifilis+9">AFC Chalandri — Χαλάνδρι</option><option value="Ολυμπιακό Στάδιο|Λεωφ. Ολυμπιονίκου Σπύρου Λούη 1, Μαρούσι|https://www.google.com/maps/search/?api=1&query=Olympic+Stadium+Athens">Ολυμπιακό Στάδιο — Μαρούσι</option></select>
 <input id="area" placeholder="Περιοχή" value="Καλλιθέα"><input id="place" placeholder="Γήπεδο" value="Athens Football Arena">
-<div class="row"><input id="date" placeholder="Ημερομηνία"><input id="time" placeholder="Ώρα"></div>
+<div class="row"><input id="date" min="" placeholder="Ημερομηνία"><input id="time" placeholder="Ώρα"></div>
 <div class="row"><select id="need"><option value="GK">Τερματοφύλακας</option><option value="CB">Στόπερ</option><option value="LB">Αριστερό Μπακ</option><option value="RB">Δεξί Μπακ</option><option value="CDM">Αμυντικό Χαφ</option><option value="CM" selected>Κεντρικό Χαφ</option><option value="CAM">Μεσοεπιθετικός</option><option value="LM">Αριστερό Χαφ</option><option value="RM">Δεξί Χαφ</option><option value="LW">Αριστερό Εξτρέμ</option><option value="RW">Δεξί Εξτρέμ</option><option value="ST">Σέντερ Φορ</option></select><input id="cost" placeholder="Κόστος" value="7€"></div>
 <textarea id="desc" placeholder="Τι παίκτη ψάχνεις;"></textarea><div id="maxInfo" class="notice">Χωρητικότητα: 10 παίκτες</div>
 <div class="actions"><button class="primary" onclick="createGame()">Δημοσίευση</button><button class="ghost" onclick="closeModal()">Άκυρο</button></div></div>`;document.getElementById('modal').classList.add('show');
@@ -343,5 +354,17 @@ async function saveProfile(){
 populateAreas();
 refreshAuth().then(loadGames);
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+</script>
+
+<script>
+(function(){
+  const d=document.getElementById('date');
+  const t=document.getElementById('time');
+  if(d){
+    const now=new Date(), y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0'), day=String(now.getDate()).padStart(2,'0');
+    d.min=`${y}-${m}-${day}`;
+  }
+  if(t && !t.value) t.value='20:00';
+})();
 </script>
 </body></html>
