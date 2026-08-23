@@ -187,7 +187,7 @@ profile.rating=Math.round(Object.values(profile.stats).reduce((a,b)=>a+b,0)/6);
 let f=photo.files[0];if(f){let r=new FileReader();r.onload=()=>{profile.photo=r.result;openProfile()};r.readAsDataURL(f)}else openProfile();
 }
 function showPlayers(){
- document.getElementById('modalContent').innerHTML=`<h2>👥 Παίκτες που μπορείς να καλέσεις</h2><div class="card"><div class="usercard"><img class="miniavatar" src="${profile.photo||'https://placehold.co/100x100/263653/ffffff?text=PLAYER'}"><div><b>${profile.name}</b><div class="mini">${positionGR(profile.position)} · ${profile.rating} OVR · ${profile.foot}</div></div></div><p>Αυτό το σημείο θα γίνει πλήρης αναζήτηση παικτών όταν συνδέσουμε τη βάση χρηστών.</p></div><button class="ghost" style="width:100%" onclick="closeModal()">Κλείσιμο</button>`;
+ document.getElementById('modalContent').innerHTML=`<h2>👥 Παίκτες που μπορείς να καλέσεις</h2><div class="card"><div class="usercard"><img class="miniavatar" src="${profile.photo||'https://placehold.co/100x100/263653/ffffff?text=PLAYER'}"><div><b>${profile.name}</b><div class="mini">${positionGR(profile.position)} · ${profile.rating} OVR · ${profile.foot}</div></div></div><p></p></div><button class="ghost" style="width:100%" onclick="closeModal()">Κλείσιμο</button>`;
  document.getElementById('modal').classList.add('show');
 }
 
@@ -367,4 +367,76 @@ document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='
   if(t && !t.value) t.value='20:00';
 })();
 </script>
+
+<script>
+/* EnjoyFootGR — real player search via Supabase */
+const ENJOYFOOT_SUPABASE_URL = "https://uqmpxjsuvzuqowmyscoh.supabase.co";
+const ENJOYFOOT_SUPABASE_KEY = "sb_publishable_y1_9Eu2rE5glmxPquDEtSw_6HQle5Wt";
+
+async function enjoyFootSearchPlayers(term) {
+  const q = (term || "").trim();
+  if (!q) return [];
+
+  const url =
+    ENJOYFOOT_SUPABASE_URL +
+    "/rest/v1/profiles?select=id,username,display_name,avatar_url,primary_position,secondary_position,overall,city,area&or=" +
+    encodeURIComponent(
+      `(display_name.ilike.*${q}*,username.ilike.*${q}*,city.ilike.*${q}*,area.ilike.*${q}*)`
+    ) +
+    "&limit=30";
+
+  const res = await fetch(url, {
+    headers: {
+      apikey: ENJOYFOOT_SUPABASE_KEY,
+      Authorization: "Bearer " + ENJOYFOOT_SUPABASE_KEY
+    }
+  });
+
+  if (!res.ok) throw new Error("Αποτυχία αναζήτησης παικτών.");
+  return await res.json();
+}
+
+window.enjoyFootSearchPlayers = enjoyFootSearchPlayers;
+</script>
+
+
+<div id="enjoyfoot-real-search" style="margin:16px 0;">
+  <input id="playerSearch" type="search" placeholder="Αναζήτηση παικτών..." 
+    style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid #ccc;font-size:16px;">
+  <div id="playerSearchResults" style="margin-top:10px;"></div>
+</div>
+<script>
+(function () {
+  const input = document.getElementById("playerSearch");
+  const results = document.getElementById("playerSearchResults");
+  if (!input || !results || !window.enjoyFootSearchPlayers) return;
+
+  let timer;
+  input.addEventListener("input", function () {
+    clearTimeout(timer);
+    const term = input.value.trim();
+    if (!term) { results.innerHTML = ""; return; }
+    timer = setTimeout(async () => {
+      try {
+        const players = await window.enjoyFootSearchPlayers(term);
+        if (!players.length) {
+          results.innerHTML = '<div style="padding:12px;opacity:.7">Δεν βρέθηκαν παίκτες.</div>';
+          return;
+        }
+        results.innerHTML = players.map(p => `
+          <div data-player-id="${p.id}" style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;">
+            <img src="${p.avatar_url || ''}" onerror="this.style.display='none'" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">
+            <div>
+              <strong>${p.display_name || p.username || 'Παίκτης'}</strong>
+              <div style="font-size:13px;opacity:.75">${p.primary_position || ''}${p.city ? ' • '+p.city : ''}${p.overall ? ' • '+p.overall : ''}</div>
+            </div>
+          </div>`).join("");
+      } catch (e) {
+        results.innerHTML = '<div style="padding:12px;color:#b00">Η αναζήτηση δεν μπόρεσε να ολοκληρωθεί.</div>';
+      }
+    }, 250);
+  });
+})();
+</script>
+
 </body></html>
