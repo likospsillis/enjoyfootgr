@@ -78,13 +78,78 @@ input,select,textarea{background:#121b31;border:1px solid #30405f;color:#fff;pad
 </style>
 
 
+
 <style id="enjoyfoot-venue-picker-style">
 .enjoy-venue-picker{position:relative;margin-top:8px}
 .enjoy-venue-picker input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #ccc;border-radius:12px;font-size:16px}
 .enjoy-venue-status{font-size:12px;margin-top:6px;opacity:.72}
-.enjoy-venue-selected{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.05)}
-</style>
-</head>
+</style><script id="enjoyfoot-venue-picker">
+(function(){
+  const CONFIG={googleMapsApiKey:"__GOOGLE_MAPS_API_KEY__"};
+  let initialized=false;
+
+  function findVenueInput(){
+    return [...document.querySelectorAll('input,textarea')].find(el=>{
+      const s=((el.name||"")+" "+(el.id||"")+" "+(el.placeholder||"")+" "+(el.getAttribute("aria-label")||"")).toLowerCase();
+      return /(γήπεδο|γηπεδο|venue|field|stadium|pitch)/.test(s);
+    });
+  }
+
+  function setup(){
+    if(initialized) return true;
+    const input=findVenueInput();
+    if(!input || !window.google?.maps?.places?.Autocomplete) return false;
+    initialized=true;
+    input.dataset.venuePicker="1";
+
+    const wrap=document.createElement("div");
+    wrap.className="enjoy-venue-picker";
+    input.parentNode.insertBefore(wrap,input);
+    wrap.appendChild(input);
+
+    const status=document.createElement("div");
+    status.className="enjoy-venue-status";
+    status.textContent="Αναζήτησε το γήπεδο και επίλεξε το σωστό αποτέλεσμα.";
+    wrap.appendChild(status);
+
+    const ac=new google.maps.places.Autocomplete(input,{
+      types:["establishment"],
+      fields:["place_id","name","formatted_address","geometry"]
+    });
+
+    ac.addListener("place_changed",()=>{
+      const p=ac.getPlace();
+      if(!p || !p.place_id) return;
+      input.value=p.name||"";
+      input.dataset.placeId=p.place_id;
+      input.dataset.lat=p.geometry?.location?.lat?.() ?? "";
+      input.dataset.lng=p.geometry?.location?.lng?.() ?? "";
+      input.dataset.address=p.formatted_address||"";
+      status.textContent="✓ Επιλέχθηκε το συγκεκριμένο γήπεδο.";
+    });
+    return true;
+  }
+
+  window.enjoyFootInitVenuePicker=setup;
+
+  // Load Google only once. Do NOT observe the whole document: that caused severe lag.
+  if(!document.getElementById("enjoyfoot-google-script") &&
+     CONFIG.googleMapsApiKey && !CONFIG.googleMapsApiKey.includes("REPLACE_")){
+    const s=document.createElement("script");
+    s.id="enjoyfoot-google-script";
+    s.src="https://maps.googleapis.com/maps/api/js?key="+encodeURIComponent(CONFIG.googleMapsApiKey)+"&libraries=places&callback=enjoyFootInitVenuePicker";
+    s.async=true;
+    s.defer=true;
+    document.head.appendChild(s);
+  }
+
+  // Try a few times only, rather than watching every DOM mutation.
+  let tries=0;
+  const timer=setInterval(()=>{
+    if(setup() || ++tries>=20) clearInterval(timer);
+  },500);
+})();
+</script></head>
 <body>
 <header><div class="logo">⚽ enjoy<span>footgr</span></div><button class="ghost" onclick="openProfile()">👤 Το προφίλ μου</button></header>
 <main>
@@ -506,73 +571,7 @@ window.enjoyFootPlayerCard=enjoyFootPlayerCard;
 </script>
 
 
-<script id="enjoyfoot-venue-picker">
-(function(){
-  const CONFIG={googleMapsApiKey: "__GOOGLE_MAPS_API_KEY__"};
 
-  function makeVenuePicker(){
-    const candidates=[...document.querySelectorAll('input,textarea')];
-    const input=candidates.find(el=>{
-      const s=((el.name||"")+" "+(el.id||"")+" "+(el.placeholder||"")+" "+(el.getAttribute("aria-label")||"")).toLowerCase();
-      return /(γήπεδο|γηπεδο|venue|field|stadium|pitch)/.test(s);
-    });
-    if(!input || input.dataset.venuePicker==="1") return;
-    input.dataset.venuePicker="1";
-
-    const wrap=document.createElement("div");
-    wrap.className="enjoy-venue-picker";
-    input.parentNode.insertBefore(wrap,input);
-    wrap.appendChild(input);
-
-    const status=document.createElement("div");
-    status.className="enjoy-venue-status";
-    status.textContent="Αναζήτησε το γήπεδο και επίλεξε το σωστό αποτέλεσμα.";
-    wrap.appendChild(status);
-
-    const selected=document.createElement("div");
-    selected.className="enjoy-venue-selected";
-    selected.hidden=true;
-    wrap.appendChild(selected);
-
-    function init(){
-      if(!window.google?.maps?.places?.Autocomplete){
-        status.textContent="Η αναζήτηση Google Maps θα ενεργοποιηθεί μόλις προστεθεί το Google Maps API key.";
-        return;
-      }
-      const ac=new google.maps.places.Autocomplete(input,{
-        types:["establishment"],
-        fields:["place_id","name","formatted_address","geometry"]
-      });
-      ac.addListener("place_changed",()=>{
-        const p=ac.getPlace();
-        if(!p.place_id) return;
-        input.value=p.name||"";
-        input.dataset.placeId=p.place_id;
-        input.dataset.lat=p.geometry?.location?.lat?.() ?? "";
-        input.dataset.lng=p.geometry?.location?.lng?.() ?? "";
-        input.dataset.address=p.formatted_address||"";
-        selected.hidden=false;
-        selected.textContent=(p.name||"")+(p.formatted_address?" • "+p.formatted_address:"");
-        status.textContent="✓ Επιλέχθηκε το συγκεκριμένο γήπεδο.";
-      });
-    }
-
-    if(CONFIG.googleMapsApiKey && !CONFIG.googleMapsApiKey.includes("REPLACE_")){
-      const s=document.createElement("script");
-      s.src="https://maps.googleapis.com/maps/api/js?key="+encodeURIComponent(CONFIG.googleMapsApiKey)+"&libraries=places&callback=enjoyFootInitVenuePicker";
-      s.async=true;s.defer=true;
-      document.head.appendChild(s);
-      window.enjoyFootInitVenuePicker=init;
-    }else{
-      init();
-    }
-  }
-
-  window.enjoyFootVenuePicker=makeVenuePicker;
-  makeVenuePicker();
-  new MutationObserver(makeVenuePicker).observe(document.body,{childList:true,subtree:true});
-})();
-</script>
 
 <script id="enjoyfoot-create-ad-fix">
 (function(){
