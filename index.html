@@ -53,6 +53,30 @@ input,select,textarea{background:#121b31;border:1px solid #30405f;color:#fff;pad
 .create-date-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:520px){.create-date-row{grid-template-columns:1fr}}
 </style>
+
+<style id="enjoyfoot-player-card-style">
+.enjoy-player-card-wrap{display:flex;justify-content:center;padding:18px 8px}
+.enjoy-player-card{
+  width:min(330px,92vw);aspect-ratio:0.70;position:relative;overflow:hidden;
+  border-radius:24px;padding:22px 18px;color:#2d2418;
+  background:linear-gradient(145deg,#f8e8b0 0%,#fff7d7 45%,#d6b86a 100%);
+  box-shadow:0 18px 45px rgba(0,0,0,.28), inset 0 0 0 2px rgba(255,255,255,.65);
+  font-family:Arial,sans-serif;
+}
+.enjoy-player-card:before{content:"";position:absolute;inset:8px;border:1px solid rgba(96,67,18,.35);border-radius:19px;pointer-events:none}
+.enjoy-card-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:2}
+.enjoy-card-rating{font-size:42px;font-weight:900;line-height:.9}
+.enjoy-card-pos{font-size:16px;font-weight:800;margin-top:5px;text-transform:uppercase}
+.enjoy-card-name{font-size:24px;font-weight:900;text-align:center;margin:4px 0 2px;text-transform:uppercase;letter-spacing:.5px}
+.enjoy-card-photo{height:190px;display:flex;justify-content:center;align-items:flex-end;position:relative;z-index:1}
+.enjoy-card-photo img{max-width:88%;max-height:190px;object-fit:contain;filter:drop-shadow(0 9px 8px rgba(0,0,0,.28))}
+.enjoy-card-divider{height:1px;background:rgba(75,51,13,.35);margin:5px 12px 10px}
+.enjoy-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px 18px;padding:0 18px}
+.enjoy-card-stat{display:flex;justify-content:space-between;font-size:15px;font-weight:800}
+.enjoy-card-stat span{font-weight:500;margin-right:8px}
+.enjoy-card-meta{text-align:center;font-size:12px;margin-top:10px;opacity:.8}
+</style>
+
 </head>
 <body>
 <header><div class="logo">⚽ enjoy<span>footgr</span></div><button class="ghost" onclick="openProfile()">👤 Το προφίλ μου</button></header>
@@ -397,45 +421,80 @@ async function enjoyFootSearchPlayers(term) {
 }
 
 window.enjoyFootSearchPlayers = enjoyFootSearchPlayers;
+document.addEventListener("click", function(e){
+  const row=e.target.closest("[data-player-id]");
+  if(!row) return;
+  const id=row.getAttribute("data-player-id");
+  enjoyFootSearchPlayers(id).catch(()=>[]);
+});
+
 </script>
 
 
-<div id="enjoyfoot-real-search" style="margin:16px 0;">
-  <input id="playerSearch" type="search" placeholder="Αναζήτηση παικτών..." 
-    style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid #ccc;font-size:16px;">
-  <div id="playerSearchResults" style="margin-top:10px;"></div>
-</div>
-<script>
-(function () {
-  const input = document.getElementById("playerSearch");
-  const results = document.getElementById("playerSearchResults");
-  if (!input || !results || !window.enjoyFootSearchPlayers) return;
 
-  let timer;
-  input.addEventListener("input", function () {
-    clearTimeout(timer);
-    const term = input.value.trim();
-    if (!term) { results.innerHTML = ""; return; }
-    timer = setTimeout(async () => {
-      try {
-        const players = await window.enjoyFootSearchPlayers(term);
-        if (!players.length) {
-          results.innerHTML = '<div style="padding:12px;opacity:.7">Δεν βρέθηκαν παίκτες.</div>';
-          return;
-        }
-        results.innerHTML = players.map(p => `
-          <div data-player-id="${p.id}" style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;">
-            <img src="${p.avatar_url || ''}" onerror="this.style.display='none'" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">
-            <div>
-              <strong>${p.display_name || p.username || 'Παίκτης'}</strong>
-              <div style="font-size:13px;opacity:.75">${p.primary_position || ''}${p.city ? ' • '+p.city : ''}${p.overall ? ' • '+p.overall : ''}</div>
-            </div>
-          </div>`).join("");
-      } catch (e) {
-        results.innerHTML = '<div style="padding:12px;color:#b00">Η αναζήτηση δεν μπόρεσε να ολοκληρωθεί.</div>';
+
+
+<script id="enjoyfoot-player-card-js">
+function enjoyFootPlayerCard(p){
+  const root=document.createElement("div");
+  root.className="enjoy-player-card-wrap";
+  const safe=(v)=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  const stats=[
+    ["PAC",p.pac],["SHO",p.sho],["PAS",p.pas],
+    ["DRI",p.dri],["DEF",p.def],["PHY",p.phy]
+  ];
+  root.innerHTML=`
+    <div class="enjoy-player-card">
+      <div class="enjoy-card-top">
+        <div><div class="enjoy-card-rating">${safe(p.overall ?? 0)}</div><div class="enjoy-card-pos">${safe(p.primary_position || "PLAYER")}</div></div>
+        <div style="font-size:12px;font-weight:900;text-align:right">${safe(p.preferred_foot || "")}</div>
+      </div>
+      <div class="enjoy-card-photo">
+        <img src="${safe(p.avatar_url || "")}" alt="${safe(p.display_name || p.username || "Player")}">
+      </div>
+      <div class="enjoy-card-name">${safe(p.display_name || p.username || "PLAYER")}</div>
+      <div class="enjoy-card-divider"></div>
+      <div class="enjoy-card-stats">
+        ${stats.map(([k,v])=>`<div class="enjoy-card-stat"><span>${k}</span>${safe(v ?? 0)}</div>`).join("")}
+      </div>
+      <div class="enjoy-card-meta">
+        ${safe(p.city || "")}${p.area ? " • "+safe(p.area) : ""}${p.height_cm ? " • "+safe(p.height_cm)+" cm" : ""}${p.weight_kg ? " • "+safe(p.weight_kg)+" kg" : ""}
+      </div>
+    </div>`;
+  return root;
+}
+window.enjoyFootPlayerCard=enjoyFootPlayerCard;
+</script>
+
+
+<script id="enjoyfoot-datetime-pickers">
+(function(){
+  function applyDateTimePickers(){
+    const fields=[...document.querySelectorAll('input, textarea, select')];
+    fields.forEach(el=>{
+      const meta=((el.getAttribute('name')||'')+' '+(el.id||'')+' '+(el.getAttribute('placeholder')||'')+' '+(el.getAttribute('aria-label')||'')).toLowerCase();
+      const label=el.previousElementSibling ? (el.previousElementSibling.textContent||'').toLowerCase() : '';
+      const text=meta+' '+label;
+
+      const isDate=/(date|datum|ημερομην|ημερομηνία|day)/.test(text);
+      const isTime=/(time|ora|ώρα|hour|start_time|end_time)/.test(text);
+
+      if(isDate && el.tagName==='INPUT' && el.type!=='date'){
+        el.type='date';
+        el.removeAttribute('pattern');
+        el.setAttribute('inputmode','none');
       }
-    }, 250);
-  });
+      if(isTime && el.tagName==='INPUT' && el.type!=='time'){
+        el.type='time';
+        el.removeAttribute('pattern');
+        el.setAttribute('inputmode','none');
+      }
+    });
+  }
+
+  applyDateTimePickers();
+  const observer=new MutationObserver(applyDateTimePickers);
+  observer.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 
