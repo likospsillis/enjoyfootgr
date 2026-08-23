@@ -1,0 +1,4 @@
+# EnjoyFootGR deployment
+
+This project expects a GitHub Actions repository secret named `GOOGLE_MAPS_API_KEY`.
+The workflow injects the key only during deployment; it is not stored in the repository source.
