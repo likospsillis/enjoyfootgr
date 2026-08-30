@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>enjoyfootgr</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#f5f7ff}
+header{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:#111a31;position:sticky;top:0;z-index:5}
+.logo{font-weight:900;font-size:24px}.logo span{color:#53e36b}
+button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}
+.primary{background:#53e36b;color:#07120a}.ghost{background:#222d4a;color:#fff}
+main{max-width:1100px;margin:auto;padding:28px 18px}
+.hero{background:linear-gradient(135deg,#16284a,#102719);padding:30px;border-radius:20px;margin-bottom:24px}
+.hero h1{font-size:38px;margin:0 0 8px}.hero p{color:#b9c4d9}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+input,select,textarea{background:#121b31;border:1px solid #30405f;color:#fff;padding:11px;border-radius:9px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.card{background:#121a2e;border:1px solid #263653;border-radius:16px;padding:18px}
+.badge{display:inline-block;background:#243653;padding:5px 9px;border-radius:99px;font-size:12px;margin:3px}
+.open{color:#53e36b}.full{color:#ff6b6b}.top{display:flex;justify-content:space-between;gap:12px}
+.rating{font-size:30px;font-weight:900;color:#ffd45c}.players{margin:15px 0;height:8px;background:#28344f;border-radius:20px}.players i{display:block;height:100%;background:#53e36b;border-radius:20px}
+.avatar{width:86px;height:86px;border-radius:50%;object-fit:cover;background:#263653}.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal.show{display:flex}.modalbox{background:#111a2f;border:1px solid #334667;border-radius:18px;padding:22px;max-width:520px;width:100%;max-height:90vh;overflow:auto}
+.form{display:grid;gap:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#1a2540;padding:10px;border-radius:10px;text-align:center}.stat b{display:block;font-size:22px}
+.profile{display:flex;gap:18px;align-items:center}.small{color:#9eabc2;font-size:13px}
+.notice{padding:12px;background:#1b2a43;border-radius:10px;margin-top:10px}
+@media(max-width:600px){.hero h1{font-size:30px}.row{grid-template-columns:1fr}.profile{align-items:flex-start}}
+
+.fieldbox{background:#18243c;border:1px solid #30405f;border-radius:12px;padding:12px;margin:12px 0}
+.fieldtitle{font-weight:900;font-size:16px}.fieldaddr{font-size:13px;color:#aebbd1;margin:5px 0}
+.mapbtn{display:inline-block;text-decoration:none;background:#243653;color:#fff;border-radius:9px;padding:9px 12px;font-weight:800;margin-top:5px}
+.areaTabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}.areaTabs button.active{background:#53e36b;color:#07120a}
+
+.requests{margin-top:14px;border-top:1px solid #30405f;padding-top:12px}.request{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#18243c;border-radius:10px;padding:9px;margin:6px 0}.mini{font-size:12px;color:#aebbd1}
+.usercard{display:flex;gap:12px;align-items:center}.miniavatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#263653}
+
+.areaSearchWrap{position:relative;min-width:230px}.areaSearchWrap input{width:100%;margin-bottom:6px}.areaSearchWrap select{width:100%;max-height:180px}
+.areaHint{font-size:12px;color:#91a0b9;margin-top:4px}
+
+.chat{display:grid;gap:8px;margin:12px 0}.msg{padding:9px 12px;border-radius:12px;background:#1b2944;max-width:85%}.msg.me{margin-left:auto;background:#244c35}.chatinput{display:flex;gap:8px}.chatinput input{flex:1}.notif{background:#243653;border-radius:10px;padding:10px;margin:7px 0}
+
+.authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.userpill{background:#1c2a43;padding:8px 11px;border-radius:10px;font-size:13px}.authstatus{margin-top:10px;color:#aebbd1}.error{background:#4b1f27;color:#ffd9de;padding:10px;border-radius:10px}.success{background:#183a27;color:#d9ffe7;padding:10px;border-radius:10px}
+
+<style id="enjoyfoot-team-style">
+.teamhero{background:linear-gradient(135deg,#1a2d50,#2b1d0d);border:1px solid #3b4c6d;border-radius:16px;padding:18px;margin:10px 0}
+.teamname{font-size:28px;font-weight:900}.teamrecord{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.teamstat{background:#18243c;border-radius:10px;padding:9px 12px}.teammember{display:flex;align-items:center;gap:10px;background:#18243c;border-radius:10px;padding:9px;margin:6px 0}.teammember img{width:42px;height:42px;border-radius:50%;object-fit:cover}.team-actions{display:flex;gap:8px;flex-wrap:wrap}.teamsearch{display:grid;grid-template-columns:1fr auto;gap:8px}
+</style>
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* enjoyfootgr stable form polish */
+.form input[type="date"], .form input[type="time"]{
+  min-height:46px; cursor:pointer; font-size:16px;
+}
+.form input[type="date"]::-webkit-calendar-picker-indicator,
+.form input[type="time"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.9}
+.create-date-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.create-date-row{grid-template-columns:1fr}}
+</style>
+
+<style id="enjoyfoot-player-card-style">
+.enjoy-player-card-wrap{display:flex;justify-content:center;padding:18px 8px}
+.enjoy-player-card{
+  width:min(330px,92vw);aspect-ratio:0.70;position:relative;overflow:hidden;
+  border-radius:24px;padding:22px 18px;color:#2d2418;
+  background:linear-gradient(145deg,#f8e8b0 0%,#fff7d7 45%,#d6b86a 100%);
+  box-shadow:0 18px 45px rgba(0,0,0,.28), inset 0 0 0 2px rgba(255,255,255,.65);
+  font-family:Arial,sans-serif;
+}
+.enjoy-player-card:before{content:"";position:absolute;inset:8px;border:1px solid rgba(96,67,18,.35);border-radius:19px;pointer-events:none}
+.enjoy-card-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:2}
+.enjoy-card-rating{font-size:42px;font-weight:900;line-height:.9}
+.enjoy-card-pos{font-size:16px;font-weight:800;margin-top:5px;text-transform:uppercase}
+.enjoy-card-name{font-size:24px;font-weight:900;text-align:center;margin:4px 0 2px;text-transform:uppercase;letter-spacing:.5px}
+.enjoy-card-photo{height:190px;display:flex;justify-content:center;align-items:flex-end;position:relative;z-index:1}
+.enjoy-card-photo img{max-width:88%;max-height:190px;object-fit:contain;filter:drop-shadow(0 9px 8px rgba(0,0,0,.28))}
+.enjoy-card-divider{height:1px;background:rgba(75,51,13,.35);margin:5px 12px 10px}
+.enjoy-card-meta{text-align:center;font-size:12px;margin-top:10px;opacity:.8}
+</style>
+
+
+<style id="enjoyfoot-venue-picker-style">
+.enjoy-venue-picker{position:relative;margin-top:8px}
+.enjoy-venue-picker input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #ccc;border-radius:12px;font-size:16px}
+.enjoy-venue-status{font-size:12px;margin-top:6px;opacity:.72}
+.enjoy-venue-selected{margin-top:8px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.05)}
+</style>
+</head>
+<body>
+<header><div class="logo">⚽ enjoy<span>footgr</span></div><div class="authbar"><button class="ghost" onclick="openProfile()">👤 Το προφίλ μου</button><button class="ghost" onclick="openMyTeam()">👑 Η ομάδα μου</button><span id="authUser" class="userpill">Δεν έχεις συνδεθεί</span><button id="authBtn" class="ghost" onclick="openAuth()">🔐 Εγγραφή / Σύνδεση</button></div></header>
+<main>
+<section class="hero">
+<h1>Βρες παίκτη. Φτιάξε ομάδα. Παίξε στο enjoyfootgr.</h1>
+<p>Αγγελίες για 5x5, 7x7 και 11x11 — με πραγματικά γήπεδα και προφίλ παικτών σε στυλ FIFA.</p>
+<div class="actions"><button class="primary" onclick="openCreate()">＋ Δημιούργησε αγγελία</button><button class="ghost" onclick="showPlayers()">👥 Βρες παίκτη</button><button class="ghost" onclick="showMyApplications()">📩 Τα αιτήματά μου</button></div>
+</section>
+<div class="filters">
+<select id="formatFilter" onchange="renderGames()"><option value="">⚽ Όλα τα formats</option><option value="5x5">5x5</option><option value="7x7">7x7</option><option value="11x11">11x11</option></select>
+<div class="areaSearchWrap"><input id="areaSearch" placeholder="📍 Γράψε περιοχή ή πόλη..." oninput="filterAreas()"><select id="areaFilter" onchange="renderGames()"><option value="">📍 Όλη η Ελλάδα</option></select></div>
+<select id="positionFilter" onchange="renderGames()"><option value="">Όλες οι θέσεις</option><option>GK</option><option>CB</option><option>LB</option><option>RB</option><option>CDM</option><option>CM</option><option>CAM</option><option>LM</option><option>RM</option><option>LW</option><option>RW</option><option>ST</option></select>
+<input id="search" placeholder="🔎 Περιοχή / θέση / γήπεδο" oninput="renderGames()"></div>
+<h2>🔥 Διαθέσιμα παιχνίδια</h2><div id="games" class="grid"></div>
+</main>
+
+<div class="modal" id="modal"><div class="modalbox" id="modalContent"></div></div>
+
+<script>
+const greekAreas=["Αθήνα","Αιγάλεω","Άλιμος","Αμαλιάδα","Αλεξανδρούπολη","Άργος","Άρτα","Βέροια","Βόλος","Γιάννενα","Γρεβενά","Δράμα","Έδεσσα","Ελευσίνα","Ηράκλειο","Θεσσαλονίκη","Θήβα","Καβάλα","Καλαμάτα","Καλλιθέα","Καρδίτσα","Κατερίνη","Καλαμαριά","Καστοριά","Κέρκυρα","Κιλκίς","Κοζάνη","Κομοτηνή","Κόρινθος","Λαμία","Λάρισα","Λευκάδα","Λιβαδειά","Μαρούσι","Μεσολόγγι","Μυτιλήνη","Νέα Σμύρνη","Νάουσα","Ναύπλιο","Ξάνθη","Πάτρα","Πειραιάς","Πρέβεζα","Ρέθυμνο","Ρόδος","Ρέντη","Σέρρες","Σπάρτη","Τρίκαλα","Τρίπολη","Χαλκίδα","Χανιά","Χίος","Ζωγράφου","Γέρακας","Καματερό","Σαλαμίνα","Σύρος","Κως"];
+function populateAreas(list=greekAreas){
+ const s=document.getElementById("areaFilter"); if(!s)return;
+ const old=s.value; s.innerHTML='<option value="">📍 Όλη η Ελλάδα</option>'+list.map(a=>`<option>${a}</option>`).join('');
+ if(list.includes(old)) s.value=old;
+}
+function filterAreas(){
+ const q=(document.getElementById("areaSearch").value||"").trim().toLowerCase();
+ const list=greekAreas.filter(a=>a.toLowerCase().includes(q));
+ populateAreas(list);
+ populateAreas();renderGames();
+}
+let games=[
+{id:1,format:"5x5",area:"Καλλιθέα",place:"Δημοτικό Γήπεδο Μίνι Ποδοσφαίρου 5x5 Καλλιθέας",address:"Π. Τσαλδάρη & Μενελάου, Καλλιθέα 176 76",map:"https://www.google.com/maps/search/?api=1&query=Π+Τσαλδάρη+Μενελάου+Καλλιθέα",date:"Παρασκευή 22/8",time:"21:00",need:"GK",count:9,max:10,cost:"7€",creator:"Μάριος",desc:"Χρειαζόμαστε τερματοφύλακα.",applications:[]},
+{id:2,format:"7x7",area:"Ρέντη",place:"Renti Arena",address:"Αγίας Άννης 46, Άγιος Ιωάννης Ρέντης 182 33",map:"https://www.google.com/maps/search/?api=1&query=Renti+Arena+Agias+Annis+46+Rentis",date:"Σάββατο 23/8",time:"20:30",need:"CM",count:11,max:14,cost:"6€",creator:"Γιάννης",desc:"Ψάχνουμε 3 άτομα για κέντρο και άμυνα.",applications:[]},
+{id:3,format:"11x11",area:"Μαρούσι",place:"Campeon Football Club",address:"Παράδρομος 3ης Φραγκ. 5, Μαρούσι 151 25",map:"https://www.google.com/maps/search/?api=1&query=Campeon+Football+Club+Marousi",date:"Κυριακή 24/8",time:"19:00",need:"RB",count:19,max:22,cost:"8€",creator:"Αλέξης",desc:"Ψάχνουμε δεξί μπακ, εξτρέμ και φορ.",applications:[]},
+{id:4,format:"7x7",area:"Γέρακας",place:"PLANET ONE",address:"Κλεισθένους 399, Γέρακας 153 44",map:"https://www.google.com/maps/search/?api=1&query=Planet+One+Kleisthenous+399+Gerakas",date:"Τρίτη 26/8",time:"21:30",need:"ST",count:12,max:14,cost:"8€",creator:"Νίκος",desc:"Χρειαζόμαστε 2 επιθετικούς.",applications:[]},
+{id:5,format:"5x5",area:"Ζωγράφου",place:"Γήπεδο Ποδοσφαίρου 5x5",address:"Κοκκινοπούλου, Ζωγράφου 157 73",map:"https://www.google.com/maps/search/?api=1&query=Γήπεδο+Ποδοσφαίρου+5x5+Κοκκινοπούλου+Ζωγράφου",date:"Τετάρτη 27/8",time:"20:00",need:"LW",count:8,max:10,cost:"6€",creator:"Πέτρος",desc:"Ψάχνουμε αριστερό εξτρέμ και έναν χαφ.",applications:[]},
+{id:6,format:"7x7",area:"Καματερό",place:"MARAKANA 7x7",address:"Αριστείδου 82, Καματερό 134 51",map:"https://www.google.com/maps/search/?api=1&query=MARAKANA+7x7+Aristidou+82+Kamatero",date:"Πέμπτη 28/8",time:"21:00",need:"CB",count:10,max:14,cost:"7€",creator:"Κώστας",desc:"Ψάχνουμε αμυντικούς.",applications:[]}
+];
+let messages={1:[{from:"Μάριος",text:"Καλησπέρα! Είσαι διαθέσιμος για Παρασκευή 21:00;"}],2:[],3:[],4:[],5:[],6:[]};
+let profile={name:"Stelios",age:31,height:172,weight:73,position:"MID",foot:"Δεξί",rating:78,stats:{PAC:82,SHO:70,PAS:84,DRI:79,DEF:62,PHY:76},photo:""};
+
+function positionGR(p){return ({GK:"Τερματοφύλακας",CB:"Στόπερ",LB:"Αριστερό Μπακ",RB:"Δεξί Μπακ",CDM:"Αμυντικό Χαφ",CM:"Κεντρικό Χαφ",CAM:"Μεσοεπιθετικός",LM:"Αριστερό Χαφ",RM:"Δεξί Χαφ",LW:"Αριστερό Εξτρέμ",RW:"Δεξί Εξτρέμ",ST:"Σέντερ Φορ"})[p]||p}
+function renderGames(){
+ const q=(document.getElementById('search').value||'').toLowerCase(), f=document.getElementById('positionFilter').value, fmt=document.getElementById('formatFilter').value, area=document.getElementById('areaFilter').value, aq=(document.getElementById('areaSearch').value||'').trim().toLowerCase();
+ document.getElementById('games').innerHTML=games.filter(g=>(!fmt||g.format===fmt)&&(!area||g.area===area)&&(!aq||g.area.toLowerCase().includes(aq))&&(!f||g.need===f)&&(!q||(g.area+g.place+g.need+g.format+g.address).toLowerCase().includes(q))).map(g=>{
+  let full=g.count>=g.max, left=g.max-g.count;
+  return `<div class="card"><div class="top"><div><span class="badge">⚽ ${g.format}</span><span class="badge">${g.area}</span><span class="badge">${positionGR(g.need)}</span></div><b class="${full?'full':'open'}">${full?'🔴 ΚΑΤΕΛΗΦΘΗ':'🟢 ΑΝΟΙΧΤΟ'}</b></div>
+  ${g.team?`<div class="badge">👑 ${esc(g.team.name)}</div>`:""}<h3>Ψάχνουμε ${left} ${left===1?'παίκτη':'παίκτες'}</h3><p>${g.desc}</p>
+  <div class="fieldbox"><div class="fieldtitle">📍 ${g.place}</div><div class="fieldaddr">${g.address}</div><a class="mapbtn" href="${g.map}" target="_blank" rel="noopener">🗺️ Google Maps</a><a class="mapbtn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(g.address)}" target="_blank" rel="noopener">🚗 Οδηγίες</a>${g.team&&g.team.owner_id===currentUser?.id?`<button class="mapbtn" onclick="openTeamById('${g.team.id}')">👑 Προβολή ομάδας</button>`:""}</div>
+  <p>📅 ${g.date} · 🕘 ${g.time}<br>💰 ${g.cost}</p>
+  <div class="players"><i style="width:${g.count/g.max*100}%"></i></div><b>${g.count}/${g.max} παίκτες</b>
+  ${full?'<button class="ghost" style="width:100%;margin-top:14px" disabled>Η αγγελία έκλεισε</button>':'<button class="primary" style="width:100%;margin-top:14px" onclick="requestJoin('+g.id+')">🙋 Θέλω να παίξω</button>'}
+  <div class="requests"><b>👥 Ενδιαφέρονται: ${g.applications.length}</b>${g.applications.length?g.applications.map((p,i)=>`<div class="request"><span>⚽ ${p.name} · ${positionGR(p.position)} · ${p.rating} OVR</span><span><button class="ghost" onclick="openChat(${g.id})">💬</button> <button class="primary" onclick="acceptPlayer(${g.id},${i})">Αποδοχή</button></span></div>`).join(''):'<div class="mini">Κανένας παίκτης δεν έχει στείλει αίτημα ακόμα.</div>'}<button class="ghost" style="width:100%;margin-top:7px" onclick="openChat(${g.id})">💬 Άνοιγμα chat αγγελίας</button></div>
+  </div>`}).join('')||'<div class="notice">Δεν βρέθηκαν αγγελίες.</div>';
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openMyTeam(){
+  if(!currentUser){openAuth();return}
+  loadMyTeam().then(async team=>{ if(team){ renderTeamModal(team); return; } const {data:inv}=await sb.from('team_invites').select('id,team_id,teams(id,name,owner_id)').eq('invited_user_id',currentUser.id).eq('status','pending').limit(1).maybeSingle(); if(inv?.teams){ document.getElementById('modalContent').innerHTML=`<h2>👑 Πρόσκληση σε ομάδα</h2><div class="teamhero"><div class="teamname">${esc(inv.teams.name)}</div><div class="mini">Σε προσκάλεσαν να γίνεις μέλος.</div></div><div class="actions"><button class="primary" onclick="acceptTeamInvite('${inv.id}','${inv.team_id}')">✅ Αποδοχή</button><button class="ghost" onclick="rejectTeamInvite('${inv.id}')">❌ Απόρριψη</button></div><button class="ghost" style="width:100%;margin-top:10px" onclick="closeModal()">Κλείσιμο</button>`; document.getElementById('modal').classList.add('show'); } else renderCreateTeamModal(); });
+}
+
+async function loadMyTeam(){
+  if(!currentUser)return null;
+  const {data:owned}=await sb.from('teams').select('*').eq('owner_id',currentUser.id).maybeSingle();
+  if(owned)return owned;
+  const {data:mem}=await sb.from('team_members').select('team_id,teams(*)').eq('user_id',currentUser.id).maybeSingle();
+  return mem?.teams||null;
+}
+
+function renderCreateTeamModal(){
+  document.getElementById('modalContent').innerHTML=`<h2>👑 Δημιούργησε την ομάδα σου</h2><div class="form">
+    <input id="teamName" maxlength="60" placeholder="Όνομα ομάδας">
+    <div class="notice">Μετά τη δημιουργία θα μπορείς να προσκαλείς μέλη, να τα αφαιρείς και να βλέπεις όλο το ρόστερ της ομάδας σου.</div>
+    <div class="actions"><button class="primary" onclick="createMyTeam()">👑 Δημιουργία ομάδας</button><button class="ghost" onclick="closeModal()">Άκυρο</button></div>
+  </div>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+async function acceptTeamInvite(inviteId,teamId){
+  const {error:e1}=await sb.from('team_members').insert({team_id:teamId,user_id:currentUser.id,role:'member'}); if(e1){alert(e1.message);return}
+  const {error:e2}=await sb.from('team_invites').update({status:'accepted'}).eq('id',inviteId); if(e2){alert(e2.message);return}
+  const team=await loadMyTeam(); if(team)renderTeamModal(team);
+}
+async function rejectTeamInvite(inviteId){
+  const {error}=await sb.from('team_invites').update({status:'rejected'}).eq('id',inviteId); if(error){alert(error.message);return} closeModal();
+}
+
+async function createMyTeam(){
+  const name=(document.getElementById('teamName').value||'').trim();
+  if(name.length<2){alert('Βάλε όνομα ομάδας.');return}
+  const existing=await loadMyTeam(); if(existing){renderTeamModal(existing);return}
+  const {data,error}=await sb.from('teams').insert({name,owner_id:currentUser.id}).select('*').single();
+  if(error){alert(error.message);return}
+  const {error:me}=await sb.from('team_members').insert({team_id:data.id,user_id:currentUser.id,role:'admin'});
+  if(me){alert(me.message);return}
+  renderTeamModal(data);
+}
+
+async function renderTeamModal(team){
+  const {data:members,error}=await sb.from('team_members').select('id,user_id,role,profiles(display_name,username,avatar_url,primary_position)').eq('team_id',team.id).order('joined_at');
+  if(error){alert(error.message);return}
+  const rows=(members||[]).map(m=>`<div class="teammember"><img src="${esc(m.profiles?.avatar_url||'https://placehold.co/80x80/263653/ffffff?text=P')}"/><div style="flex:1"><b>${esc(m.profiles?.display_name||m.profiles?.username||'Παίκτης')}</b><div class="mini">${esc(positionGR(m.profiles?.primary_position||'CM'))}${m.role==='admin'?' · 👑 Admin':''}</div></div>${m.user_id!==currentUser.id&&team.owner_id===currentUser.id?`<button class="ghost" onclick="removeTeamMember('${m.id}')">✖ Αφαίρεση</button>`:''}</div>`).join('');
+  document.getElementById('modalContent').innerHTML=`<div class="teamhero"><div class="teamname">👑 ${esc(team.name)}</div><div class="mini">Δημιουργός: ${team.owner_id===currentUser.id?'Εσύ':'Admin'}</div><div class="teamrecord"><span class="teamstat">🏆 Νίκες <b>${team.wins}</b></span><span class="teamstat">🤝 Ισοπαλίες <b>${team.draws}</b></span><span class="teamstat">❌ Ήττες <b>${team.losses}</b></span><span class="teamstat">👥 Μέλη <b>${(members||[]).length}</b></span></div></div>
+  <h3>👥 Μέλη ομάδας</h3>${rows||'<div class="notice">Δεν υπάρχουν μέλη ακόμα.</div>'}
+  ${team.owner_id===currentUser.id?`<h3>📨 Πρόσκληση μέλους</h3><div class="teamsearch"><input id="inviteSearch" placeholder="Username ή όνομα παίκτη"><button class="primary" onclick="inviteTeamMember('${team.id}')">Πρόσκληση</button></div><div id="inviteResult" class="mini" style="margin-top:8px"></div>`:''}
+  ${team.owner_id!==currentUser.id?`<div class="notice">Είσαι μέλος της ομάδας. Μόνο ο 👑 Admin μπορεί να προσκαλεί ή να αφαιρεί μέλη.</div>`:''}
+  <button class="ghost" style="width:100%;margin-top:12px" onclick="closeModal()">Κλείσιμο</button>`;
+  document.getElementById('modal').classList.add('show');
+}
+
+async function openTeamById(teamId){
+  const {data:team,error}=await sb.from('teams').select('*').eq('id',teamId).single();
+  if(error||!team){alert(error?.message||'Η ομάδα δεν βρέθηκε.');return}
+  renderTeamModal(team);
+}
+
+async function inviteTeamMember(teamId){
+  const q=(document.getElementById('inviteSearch').value||'').trim();
+  const out=document.getElementById('inviteResult'); if(q.length<2){out.textContent='Γράψε όνομα ή username.';return}
+  const {data:users,error}=await sb.from('profiles').select('id,display_name,username').or(`display_name.ilike.*${q}*,username.ilike.*${q}*`).limit(5);
+  if(error){out.textContent=error.message;return}
+  if(!users?.length){out.textContent='Δεν βρέθηκε παίκτης.';return}
+  const u=users[0]; if(u.id===currentUser.id){out.textContent='Δεν μπορείς να προσκαλέσεις τον εαυτό σου.';return}
+  const {error:e}=await sb.from('team_invites').upsert({team_id:teamId,invited_user_id:u.id,invited_by:currentUser.id,status:'pending'},{onConflict:'team_id,invited_user_id'});
+  if(e){out.textContent=e.message;return}
+  await sb.from('notifications').insert({user_id:u.id,title:'👑 Πρόσκληση σε ομάδα',body:`Σε προσκάλεσαν στην ομάδα.`,game_id:null,application_id:null});
+  out.textContent=`Η πρόσκληση στάλθηκε στον ${u.display_name||u.username||'παίκτη'}.`;
+}
+
+async function removeTeamMember(memberId){
+  if(!confirm('Να αφαιρεθεί αυτό το μέλος από την ομάδα;'))return;
+  const {error}=await sb.from('team_members').delete().eq('id',memberId);
+  if(error){alert(error.message);return}
+  const team=await loadMyTeam(); if(team)renderTeamModal(team);
+}
+
+function openCreate(){
+ document.getElementById('modalContent').innerHTML=`<h2>＋ Νέα αγγελία</h2><div class="form">
+<select id="format" onchange="updateMax()"><option value="5x5">⚽ 5x5 — 10 παίκτες</option><option value="7x7">⚽ 7x7 — 14 παίκτες</option><option value="11x11">⚽ 11x11 — 22 παίκτες</option></select>
+<input id="fieldSearch" placeholder="🔎 Ψάξε γήπεδο στην περιοχή..." oninput="searchFields()"><select id="field" onchange="syncField()"><option value="custom">➕ Άλλο / γράψε γήπεδο</option><option value="Champions Club 5x5 7x7|Ευίας 6, Γέρακας|https://www.google.com/maps/search/?api=1&query=Champions+Club+5x5+7x7+Gerakas">Champions Club 5x5 7x7 — Γέρακας</option><option value="SOCCER ACTION|Χατζηανέστη 31, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=SOCCER+ACTION+Rentis">SOCCER ACTION — Ρέντης</option><option value="Renti Arena|Αγίας Άννης 46, Άγιος Ιωάννης Ρέντης|https://www.google.com/maps/search/?api=1&query=Renti+Arena+Agias+Annis+46+Rentis">Renti Arena — Ρέντης</option><option value="AFC Chalandri|Εριφύλης 9, Χαλάνδρι|https://www.google.com/maps/search/?api=1&query=AFC+Chalandri+Erifilis+9">AFC Chalandri — Χαλάνδρι</option><option value="Ολυμπιακό Στάδιο|Λεωφ. Ολυμπιονίκου Σπύρου Λούη 1, Μαρούσι|https://www.google.com/maps/search/?api=1&query=Olympic+Stadium+Athens">Ολυμπιακό Στάδιο — Μαρούσι</option></select>
+<input id="area" placeholder="Περιοχή" value="Καλλιθέα"><input id="place" placeholder="Γήπεδο" value="Athens Football Arena">
+<div class="row"><input id="date" min="" placeholder="Ημερομηνία"><input id="time" placeholder="Ώρα"></div>
+<div class="row"><select id="need"><option value="GK">Τερματοφύλακας</option><option value="CB">Στόπερ</option><option value="LB">Αριστερό Μπακ</option><option value="RB">Δεξί Μπακ</option><option value="CDM">Αμυντικό Χαφ</option><option value="CM" selected>Κεντρικό Χαφ</option><option value="CAM">Μεσοεπιθετικός</option><option value="LM">Αριστερό Χαφ</option><option value="RM">Δεξί Χαφ</option><option value="LW">Αριστερό Εξτρέμ</option><option value="RW">Δεξί Εξτρέμ</option><option value="ST">Σέντερ Φορ</option></select><input id="cost" placeholder="Κόστος" value="7€"></div>
+<textarea id="desc" placeholder="Τι παίκτη ψάχνεις;"></textarea><div id="teamSelectWrap" class="notice">👑 <b>Η ομάδα μου</b><select id="teamSelect" style="width:100%;margin-top:7px"><option value="">Χωρίς ομάδα</option></select></div><div id="maxInfo" class="notice">Χωρητικότητα: 10 παίκτες</div>
+<div class="actions"><button class="primary" onclick="createGame()">Δημοσίευση</button><button class="ghost" onclick="closeModal()">Άκυρο</button></div></div>`;document.getElementById('modal').classList.add('show');
+}
+function searchFields(){
+ const q=(document.getElementById("fieldSearch").value||"").toLowerCase();
+ const s=document.getElementById("field"), opts=[...s.options];
+ opts.forEach(o=>{ if(o.value==="custom"||!q){o.hidden=false}else{o.hidden=!o.textContent.toLowerCase().includes(q)} });
+}
+function updateMax(){let m={"5x5":10,"7x7":14,"11x11":22}[format.value];maxInfo.textContent=`Χωρητικότητα: ${m} παίκτες`;}
+function syncField(){if(!document.getElementById("field"))return;if(field.value!=="custom"){let [n,a,u]=field.value.split("|");place.value=n;area.value=a.includes("Ρέντη")?"Ρέντη":a.includes("Γέρακας")?"Γέρακας":a.includes("Μαρούσι")?"Μαρούσι":area.value;place.dataset.map=u}else{place.dataset.map=""}}
+function createGame(){let m={"5x5":10,"7x7":14,"11x11":22}[format.value];games.unshift({id:Date.now(),format:format.value,area:area.value,place:place.value,address:area.value,map:place.dataset.map||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.value+" "+area.value)}`,date:date.value||"Νέα ημερομηνία",time:time.value||"20:00",need:need.value,count:m-1,max:m,cost:cost.value||"—",creator:profile.name,desc:desc.value||`Ψάχνουμε 1 παίκτη για ${format.value}.`,applications:[]});closeModal();renderGames()}
+function requestJoin(id){
+ let g=games.find(x=>x.id===id);
+ if(g.applications.some(p=>p.name===profile.name)){openChat(id);return}
+ g.applications.push({name:profile.name,position:profile.position,rating:profile.rating});
+ if(!messages[id])messages[id]=[];
+ messages[id].push({from:profile.name,text:"Γεια! Ενδιαφέρομαι να παίξω στην αγγελία σου."});
+ alert("Το αίτημά σου στάλθηκε! Μπορείς τώρα να στείλεις μήνυμα.");
+ renderGames();
+ openChat(id);
+}
+function acceptPlayer(id,i){
+ let g=games.find(x=>x.id===id), p=g.applications[i];
+ if(g.count>=g.max){alert("Η ομάδα είναι ήδη πλήρης.");return}
+ g.count++; g.applications.splice(i,1);
+ if(!messages[id])messages[id]=[];
+ messages[id].push({from:g.creator,text:`Ο ${p.name} έγινε δεκτός στην ομάδα! Καλώς ήρθες.`});
+ alert(`${p.name} προστέθηκε στην ομάδα! ${g.count}/${g.max}`);
+ renderGames();
+}
+function openChat(id){
+ const g=games.find(x=>x.id===id); if(!g)return;
+ if(!messages[id])messages[id]=[];
+ document.getElementById('modalContent').innerHTML=`<h2>💬 ${g.format} · ${g.area}</h2><div class="mini">${g.place} · ${g.date} · ${g.time}</div>
+ <div class="chat" id="chatbox">${messages[id].map(m=>`<div class="msg ${m.from===profile.name?'me':''}"><b>${m.from}</b><br>${m.text}</div>`).join('')}</div>
+ <div class="chatinput"><input id="chatText" placeholder="Γράψε μήνυμα..." onkeydown="if(event.key==='Enter')sendMessage(${id})"><button class="primary" onclick="sendMessage(${id})">Αποστολή</button></div>
+ <button class="ghost" style="width:100%;margin-top:10px" onclick="closeModal()">Κλείσιμο</button>`;
+ document.getElementById('modal').classList.add('show');
+}
+function sendMessage(id){
+ const input=document.getElementById('chatText'); const text=(input.value||'').trim(); if(!text)return;
+ if(!messages[id])messages[id]=[]; messages[id].push({from:profile.name,text});
+ openChat(id);
+}
+function showMyApplications(){
+ let sent=games.filter(g=>g.applications.some(p=>p.name===profile.name));
+ document.getElementById('modalContent').innerHTML=`<h2>📩 Τα αιτήματά μου</h2>${sent.length?sent.map(g=>`<div class="card"><b>${g.format} · ${g.area}</b><p>${g.place}<br>${g.date} · ${g.time}</p><span class="badge">Αναμονή / επικοινωνία</span><button class="ghost" style="width:100%;margin-top:8px" onclick="openChat(${g.id})">💬 Άνοιγμα μηνυμάτων</button></div>`).join(''):'<div class="notice">Δεν έχεις στείλει ακόμα αίτημα. Πάτα «Θέλω να παίξω» σε μια αγγελία.</div>'}<button class="ghost" style="width:100%;margin-top:12px" onclick="closeModal()">Κλείσιμο</button>`;
+ document.getElementById('modal').classList.add('show');
+}
+function openProfile(){
+
+document.getElementById('modalContent').innerHTML=`<div class="profile"><img class="avatar" src="${profile.photo||'https://placehold.co/180x180/263653/ffffff?text=PLAYER'}"><div><h2>${profile.name}</h2><div class="rating">${profile.rating} OVR</div><div class="small">${positionGR(profile.position)} · ${profile.foot} · ${profile.age} ετών</div></div></div>
+<div class="notice">📏 ${profile.height} cm &nbsp; ⚖️ ${profile.weight} kg</div><button class="primary" style="width:100%;margin-top:15px" onclick="editProfile()">✏️ Επεξεργασία προφίλ</button><button class="ghost" style="width:100%;margin-top:8px" onclick="closeModal()">Κλείσιμο</button>`;
+document.getElementById('modal').classList.add('show');
+}
+function editProfile(){
+document.getElementById('modalContent').innerHTML=`<h2>✏️ Το προφίλ μου</h2><div class="form">
+<input id="pname" value="${profile.name}" placeholder="Όνομα"><div class="row"><input id="page" type="number" value="${profile.age}" placeholder="Ηλικία"><input id="pheight" type="number" value="${profile.height}" placeholder="Ύψος"></div><div class="row"><input id="pweight" type="number" value="${profile.weight}" placeholder="Βάρος"><select id="ppos"><option>GK</option><option>DEF</option><option selected>MID</option><option>ATT</option></select></div>
+<select id="pfoot"><option>Δεξί</option><option>Αριστερό</option><option>Και τα δύο</option></select><input id="photo" type="file" accept="image/*">
+<div class="actions"><button class="primary" onclick="saveProfile()">Αποθήκευση</button><button class="ghost" onclick="closeModal()">Άκυρο</button></div></div>`;
+}
+function saveProfile(){
+profile.name=pname.value;profile.age=+page.value;profile.height=+pheight.value;profile.weight=+pweight.value;profile.position=ppos.value;profile.foot=pfoot.value;
+Object.keys(profile.stats).forEach(k=>profile.stats[k]=Math.max(1,Math.min(99,+document.getElementById('st_'+k).value||1)));
+profile.rating=Math.round(Object.values(profile.stats).reduce((a,b)=>a+b,0)/6);
+let f=photo.files[0];if(f){let r=new FileReader();r.onload=()=>{profile.photo=r.result;openProfile()};r.readAsDataURL(f)}else openProfile();
+}
+function showPlayers(){
+ document.getElementById('modalContent').innerHTML=`<h2>👥 Παίκτες που μπορείς να καλέσεις</h2><div class="card"><div class="usercard"><img class="miniavatar" src="${profile.photo||'https://placehold.co/100x100/263653/ffffff?text=PLAYER'}"><div><b>${profile.name}</b><div class="mini">${positionGR(profile.position)} · ${profile.rating} OVR · ${profile.foot}</div></div></div><p></p></div><button class="ghost" style="width:100%" onclick="closeModal()">Κλείσιμο</button>`;
+ document.getElementById('modal').classList.add('show');
+}
+
+const SUPABASE_URL="https://uqmpxjsuvzuqowmyscoh.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_y1_9Eu2rE5glmxPquDEtSw_6HQle5Wt";
+const {createClient}=window.supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentUser=null,currentProfile=null;
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+
+async function refreshAuth(){
+ const {data}=await sb.auth.getUser(); currentUser=data.user||null;
+ if(currentUser){
+  const {data:p}=await sb.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+  currentProfile=p||null;
+  if(p){
+   profile.name=p.display_name||"Παίκτης";profile.age=p.age||31;profile.height=p.height_cm||172;profile.weight=p.weight_kg||73;
+   profile.position=p.primary_position||"CM";profile.foot=p.preferred_foot||"Δεξί";profile.rating=p.overall||50;profile.photo=p.avatar_url||"";
+   profile.stats={PAC:p.pac||50,SHO:p.sho||50,PAS:p.pas||50,DRI:p.dri||50,DEF:p.def||50,PHY:p.phy||50};
+  }
+  document.getElementById("authUser").textContent="👤 "+profile.name;
+  document.getElementById("authBtn").textContent="🚪 Αποσύνδεση";
+  document.getElementById("authBtn").onclick=logout;
+ }else{
+  document.getElementById("authUser").textContent="Δεν έχεις συνδεθεί";
+  document.getElementById("authBtn").textContent="🔐 Εγγραφή / Σύνδεση";
+  document.getElementById("authBtn").onclick=openAuth;
+ }
+}
+
+function openAuth(){
+ document.getElementById("modalContent").innerHTML=`<h2>🔐 enjoyfootgr</h2>
+ <div class="form"><input id="authEmail" type="email" placeholder="Email">
+ <input id="authPassword" type="password" placeholder="Κωδικός (6+ χαρακτήρες)">
+ <div class="actions"><button class="primary" onclick="signup()">Εγγραφή</button><button class="ghost" onclick="login()">Σύνδεση</button></div>
+ <div id="authMsg" class="authstatus">Μετά την εγγραφή μπορεί να χρειαστεί επιβεβαίωση email.</div>
+ <button class="ghost" style="width:100%" onclick="closeModal()">Κλείσιμο</button></div>`;
+ document.getElementById("modal").classList.add("show");
+}
+async function signup(){
+ const email=authEmail.value.trim(),password=authPassword.value;
+ if(password.length<6){authMsg.innerHTML='<div class="error">Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.</div>';return}
+ const {data,error}=await sb.auth.signUp({email,password});
+ authMsg.innerHTML=error?`<div class="error">${esc(error.message)}</div>`:'<div class="success">Η εγγραφή έγινε. Έλεγξε το email σου αν ζητηθεί επιβεβαίωση.</div>';
+ if(data.user)await refreshAuth();
+}
+async function login(){
+ const {error}=await sb.auth.signInWithPassword({email:authEmail.value.trim(),password:authPassword.value});
+ authMsg.innerHTML=error?`<div class="error">${esc(error.message)}</div>`:'<div class="success">Συνδέθηκες!</div>';
+ if(!error){await refreshAuth();await loadGames();setTimeout(closeModal,500)}
+}
+async function logout(){await sb.auth.signOut();await refreshAuth();await loadGames();alert("Έγινε αποσύνδεση.")}
+
+async function loadApplications(){
+ if(!currentUser)return;
+ for(const g of games){
+  const {data}=await sb.from("game_applications").select("id,player_id,position,status,profiles(display_name,overall)").eq("game_id",g.id).eq("status","pending");
+  g.applications=(data||[]).map(x=>({id:x.id,player_id:x.player_id,name:x.profiles?.display_name||"Παίκτης",position:x.position||"CM",rating:x.profiles?.overall||50,status:x.status}));
+ }
+}
+
+async function loadGames(){
+ const {data,error}=await sb.from("games").select("*, fields(*)").eq("is_cancelled",false).order("game_date",{ascending:true}).order("game_time",{ascending:true});
+ if(error){console.error(error);return}
+ games=(data||[]).map(g=>({
+  id:g.id,format:g.format,area:g.area||g.city,place:g.fields?.name||"Γήπεδο",
+  address:g.fields?.address||g.city,map:g.fields?.google_maps_url||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((g.fields?.name||"Γήπεδο")+" "+(g.area||g.city))}`,
+  date:g.game_date,time:String(g.game_time).slice(0,5),need:g.needed_position,count:g.current_players,max:g.max_players,
+  cost:g.price==null?"—":g.price+"€",creator:g.creator_id,desc:g.description||"",team_id:g.team_id||null,applications:[]
+ }));
+ await loadApplications();
+  const teamIds=[...new Set(games.map(x=>x.team_id).filter(Boolean))];
+  if(teamIds.length){const {data:ts}=await sb.from('teams').select('id,name,owner_id,wins,losses,draws').in('id',teamIds);const tm=Object.fromEntries((ts||[]).map(t=>[t.id,t]));games.forEach(g=>g.team=tm[g.team_id]||null);}
+  renderGames();
+}
+
+async function createGame(){
+ if(!currentUser){openAuth();return}
+ const m={"5x5":10,"7x7":14,"11x11":22}[format.value];let fieldId=null;
+ if(field.value!=="custom"){
+  const [n,addr,url]=field.value.split("|");
+  const {data:ex}=await sb.from("fields").select("id").eq("name",n).eq("address",addr).maybeSingle();
+  if(ex)fieldId=ex.id;
+  else{
+   const {data:nf,error}=await sb.from("fields").insert({name:n,address:addr,city:area.value,area:area.value,google_maps_url:url,supports_5x5:format.value==="5x5",supports_7x7:format.value==="7x7",supports_11x11:format.value==="11x11"}).select("id").single();
+   if(error){alert(error.message);return} fieldId=nf.id;
+  }
+ }
+ const {error}=await sb.from("games").insert({
+  creator_id:currentUser.id,format:format.value,title:`Ψάχνουμε 1 ${positionGR(need.value)}`,
+  description:desc.value||`Ψάχνουμε 1 παίκτη για ${format.value}.`,field_id:fieldId,
+  city:area.value,area:area.value,game_date:date.value||new Date().toISOString().slice(0,10),
+  game_time:time.value||"20:00",price:parseFloat(cost.value)||null,max_players:m,current_players:1,
+  needed_position:need.value,needed_players:1,team_id:document.getElementById('teamSelect')?.value||null
+ });
+ if(error){alert(error.message);return}
+ closeModal();await loadGames();alert("Η αγγελία δημοσιεύτηκε!");
+}
+
+async function requestJoin(id){
+ if(!currentUser){openAuth();return}
+ const {error}=await sb.from("game_applications").insert({game_id:id,player_id:currentUser.id,position:profile.position,message:"Ενδιαφέρομαι να παίξω."});
+ if(error){alert(error.message.includes("duplicate")?"Έχεις ήδη στείλει αίτημα.":error.message);return}
+ await loadApplications();renderGames();openChat(id);
+}
+
+async function acceptPlayer(id,i){
+ if(!currentUser)return;
+ const g=games.find(x=>x.id===id),p=g?.applications[i];if(!g||!p)return;
+ const {error:e1}=await sb.from("game_applications").update({status:"accepted"}).eq("id",p.id);
+ if(e1){alert(e1.message);return}
+ const {error:e2}=await sb.from("game_members").insert({game_id:id,player_id:p.player_id,position:p.position});
+ if(e2){alert(e2.message);return}
+ await loadGames();alert(`${p.name} προστέθηκε στην ομάδα!`);
+}
+
+async function openChat(id){
+ if(!currentUser){openAuth();return}
+ const g=games.find(x=>x.id===id);if(!g)return;
+ const {data,error}=await sb.from("messages").select("id,sender_id,content,created_at,moderation_status,profiles(display_name)").eq("game_id",id).order("created_at",{ascending:true});
+ if(error){alert(error.message);return}
+ const visible=(data||[]).filter(m=>m.moderation_status!=="blocked");
+ document.getElementById('modalContent').innerHTML=`<h2>💬 ${g.format} · ${esc(g.area)}</h2>
+ <div class="mini">${esc(g.place)} · ${esc(g.date)} · ${esc(g.time)}</div>
+ <div class="chat" id="chatbox">${visible.map(m=>`<div class="msg ${m.sender_id===currentUser.id?'me':''}"><b>${esc(m.profiles?.display_name||'Παίκτης')}</b><br>${esc(m.content)}</div>`).join('')}</div>
+ <div id="chatMsg" class="authstatus"></div>
+ <div class="chatinput"><input id="chatText" placeholder="Γράψε μήνυμα..." onkeydown="if(event.key==='Enter')sendMessage('${id}')"><button class="primary" onclick="sendMessage('${id}')">Αποστολή</button></div>
+ <button class="ghost" style="width:100%;margin-top:10px" onclick="closeModal()">Κλείσιμο</button>`;
+ document.getElementById('modal').classList.add('show');
+ if(window.chatChannel)await sb.removeChannel(window.chatChannel);
+ window.chatChannel=sb.channel("chat-"+id).on("postgres_changes",{event:"INSERT",schema:"public",table:"messages",filter:`game_id=eq.${id}`},()=>openChat(id)).subscribe();
+}
+
+async function sendMessage(id){
+ if(!currentUser)return;
+ const text=(document.getElementById('chatText').value||'').trim();if(!text)return;
+ const {error}=await sb.from("messages").insert({game_id:id,sender_id:currentUser.id,content:text,message_type:"text"});
+ if(error){document.getElementById("chatMsg").innerHTML=`<div class="error">${esc(error.message)}</div>`;return}
+ document.getElementById('chatText').value="";
+}
+
+async function showMyApplications(){
+ if(!currentUser){openAuth();return}
+ const {data,error}=await sb.from("game_applications").select("id,status,game_id,games(format,area,game_date,game_time,fields(name))").eq("player_id",currentUser.id).order("created_at",{ascending:false});
+ if(error){alert(error.message);return}
+ document.getElementById('modalContent').innerHTML=`<h2>📩 Τα αιτήματά μου</h2>${(data||[]).length?(data||[]).map(x=>`<div class="card"><b>${x.games?.format||''} · ${esc(x.games?.area||'')}</b><p>${esc(x.games?.fields?.name||'Γήπεδο')}<br>${x.games?.game_date||''} · ${String(x.games?.game_time||'').slice(0,5)}</p><span class="badge">${x.status==='accepted'?'✅ Εγκρίθηκε':x.status==='rejected'?'❌ Απορρίφθηκε':'⏳ Αναμονή'}</span><button class="ghost" style="width:100%;margin-top:8px" onclick="openChat('${x.game_id}')">💬 Άνοιγμα chat</button></div>`).join(''):'<div class="notice">Δεν έχεις στείλει ακόμα αίτημα.</div>'}<button class="ghost" style="width:100%;margin-top:12px" onclick="closeModal()">Κλείσιμο</button>`;
+ document.getElementById('modal').classList.add('show');
+}
+
+async function saveProfile(){
+ if(!currentUser){alert("Συνδέσου πρώτα.");return}
+ profile.name=pname.value;profile.age=+page.value;profile.height=+pheight.value;profile.weight=+pweight.value;profile.position=ppos.value;profile.foot=pfoot.value;
+ Object.keys(profile.stats).forEach(k=>profile.stats[k]=Math.max(1,Math.min(99,+document.getElementById('st_'+k).value||1)));
+ profile.rating=Math.round(Object.values(profile.stats).reduce((a,b)=>a+b,0)/6);
+ let avatarUrl=profile.photo,f=photo.files[0];
+ if(f){
+  let ext=(f.name.split(".").pop()||"jpg").toLowerCase(),path=`${currentUser.id}/${Date.now()}.${ext}`;
+  let up=await sb.storage.from("avatars").upload(path,f,{upsert:true,contentType:f.type});
+  if(!up.error)avatarUrl=sb.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+ }
+ const {error}=await sb.from("profiles").upsert({id:currentUser.id,display_name:profile.name,age:profile.age,height_cm:profile.height,weight_kg:profile.weight,primary_position:profile.position,preferred_foot:profile.foot,avatar_url:avatarUrl,pac:profile.stats.PAC,sho:profile.stats.SHO,pas:profile.stats.PAS,dri:profile.stats.DRI,def:profile.stats.DEF,phy:profile.stats.PHY});
+ if(error){alert(error.message);return}
+ await refreshAuth();openProfile();
+}
+
+populateAreas();
+refreshAuth().then(loadGames);
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+</script>
+
+<script>
+(function(){
+  const d=document.getElementById('date');
+  const t=document.getElementById('time');
+  if(d){
+    const now=new Date(), y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0'), day=String(now.getDate()).padStart(2,'0');
+    d.min=`${y}-${m}-${day}`;
+  }
+  if(t && !t.value) t.value='20:00';
+})();
+</script>
+
+<script>
+/* EnjoyFootGR — real player search via Supabase */
+const ENJOYFOOT_SUPABASE_URL = "https://uqmpxjsuvzuqowmyscoh.supabase.co";
+const ENJOYFOOT_SUPABASE_KEY = "sb_publishable_y1_9Eu2rE5glmxPquDEtSw_6HQle5Wt";
+
+async function enjoyFootSearchPlayers(term) {
+  const q = (term || "").trim();
+  if (!q) return [];
+
+  const url =
+    ENJOYFOOT_SUPABASE_URL +
+    "/rest/v1/profiles?select=id,username,display_name,avatar_url,primary_position,secondary_position,overall,city,area&or=" +
+    encodeURIComponent(
+      `(display_name.ilike.*${q}*,username.ilike.*${q}*,city.ilike.*${q}*,area.ilike.*${q}*)`
+    ) +
+    "&limit=30";
+
+  const res = await fetch(url, {
+    headers: {
+      apikey: ENJOYFOOT_SUPABASE_KEY,
+      Authorization: "Bearer " + ENJOYFOOT_SUPABASE_KEY
+    }
+  });
+
+  if (!res.ok) throw new Error("Αποτυχία αναζήτησης παικτών.");
+  return await res.json();
+}
+
+window.enjoyFootSearchPlayers = enjoyFootSearchPlayers;
+document.addEventListener("click", function(e){
+  const row=e.target.closest("[data-player-id]");
+  if(!row) return;
+  const id=row.getAttribute("data-player-id");
+  enjoyFootSearchPlayers(id).catch(()=>[]);
+});
+
+</script>
+
+
+
+
+
+<script id="enjoyfoot-player-card-js">
+function enjoyFootPlayerCard(p){
+  const root=document.createElement("div");
+  root.className="enjoy-player-card-wrap";
+  const safe=(v)=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  root.innerHTML=`
+    <div class="enjoy-player-card">
+      <div class="enjoy-card-top">
+        <div><div class="enjoy-card-rating">${safe(p.overall ?? 0)}</div><div class="enjoy-card-pos">${safe(p.primary_position || "PLAYER")}</div></div>
+        <div style="font-size:12px;font-weight:900;text-align:right">${safe(p.preferred_foot || "")}</div>
+      </div>
+      <div class="enjoy-card-photo">
+        <img src="${safe(p.avatar_url || "")}" alt="${safe(p.display_name || p.username || "Player")}">
+      </div>
+      <div class="enjoy-card-name">${safe(p.display_name || p.username || "PLAYER")}</div>
+      <div class="enjoy-card-divider"></div>
+<div class="enjoy-card-meta">
+        ${safe(p.city || "")}${p.area ? " • "+safe(p.area) : ""}${p.height_cm ? " • "+safe(p.height_cm)+" cm" : ""}${p.weight_kg ? " • "+safe(p.weight_kg)+" kg" : ""}
+      </div>
+    </div>`;
+  return root;
+}
+window.enjoyFootPlayerCard=enjoyFootPlayerCard;
+</script>
+
+
+<script id="enjoyfoot-datetime-pickers">
+(function(){
+  function applyDateTimePickers(){
+    const fields=[...document.querySelectorAll('input, textarea, select')];
+    fields.forEach(el=>{
+      const meta=((el.getAttribute('name')||'')+' '+(el.id||'')+' '+(el.getAttribute('placeholder')||'')+' '+(el.getAttribute('aria-label')||'')).toLowerCase();
+      const label=el.previousElementSibling ? (el.previousElementSibling.textContent||'').toLowerCase() : '';
+      const text=meta+' '+label;
+
+      const isDate=/(date|datum|ημερομην|ημερομηνία|day)/.test(text);
+      const isTime=/(time|ora|ώρα|hour|start_time|end_time)/.test(text);
+
+      if(isDate && el.tagName==='INPUT' && el.type!=='date'){
+        el.type='date';
+        el.removeAttribute('pattern');
+        el.setAttribute('inputmode','none');
+      }
+      if(isTime && el.tagName==='INPUT' && el.type!=='time'){
+        el.type='time';
+        el.removeAttribute('pattern');
+        el.setAttribute('inputmode','none');
+      }
+    });
+  }
+
+  applyDateTimePickers();
+  const observer=new MutationObserver(applyDateTimePickers);
+  observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
+
+<script id="enjoyfoot-venue-picker">
+(function(){
+  const CONFIG={googleMapsApiKey:"AIzaSyDpdTGrGSMC1OZPTKhhfe45Ew3pn6vxbc0"};
+
+  function makeVenuePicker(){
+    const candidates=[...document.querySelectorAll('input,textarea')];
+    const input=candidates.find(el=>{
+      const s=((el.name||"")+" "+(el.id||"")+" "+(el.placeholder||"")+" "+(el.getAttribute("aria-label")||"")).toLowerCase();
+      return /(γήπεδο|γηπεδο|venue|field|stadium|pitch)/.test(s);
+    });
+    if(!input || input.dataset.venuePicker==="1") return;
+    input.dataset.venuePicker="1";
+
+    const wrap=document.createElement("div");
+    wrap.className="enjoy-venue-picker";
+    input.parentNode.insertBefore(wrap,input);
+    wrap.appendChild(input);
+
+    const status=document.createElement("div");
+    status.className="enjoy-venue-status";
+    status.textContent="Αναζήτησε το γήπεδο και επίλεξε το σωστό αποτέλεσμα.";
+    wrap.appendChild(status);
+
+    const selected=document.createElement("div");
+    selected.className="enjoy-venue-selected";
+    selected.hidden=true;
+    wrap.appendChild(selected);
+
+    function init(){
+      if(!window.google?.maps?.places?.Autocomplete){
+        status.textContent="Η αναζήτηση Google Maps θα ενεργοποιηθεί μόλις προστεθεί το Google Maps API key.";
+        return;
+      }
+      const ac=new google.maps.places.Autocomplete(input,{
+        types:["establishment"],
+        fields:["place_id","name","formatted_address","geometry"]
+      });
+      ac.addListener("place_changed",()=>{
+        const p=ac.getPlace();
+        if(!p.place_id) return;
+        input.value=p.name||"";
+        input.dataset.placeId=p.place_id;
+        input.dataset.lat=p.geometry?.location?.lat?.() ?? "";
+        input.dataset.lng=p.geometry?.location?.lng?.() ?? "";
+        input.dataset.address=p.formatted_address||"";
+        selected.hidden=false;
+        selected.textContent=(p.name||"")+(p.formatted_address?" • "+p.formatted_address:"");
+        status.textContent="✓ Επιλέχθηκε το συγκεκριμένο γήπεδο.";
+      });
+    }
+
+    if(CONFIG.googleMapsApiKey && !CONFIG.googleMapsApiKey.includes("REPLACE_")){
+      const s=document.createElement("script");
+      s.src="https://maps.googleapis.com/maps/api/js?key="+encodeURIComponent(CONFIG.googleMapsApiKey)+"&libraries=places&callback=enjoyFootInitVenuePicker";
+      s.async=true;s.defer=true;
+      document.head.appendChild(s);
+      window.enjoyFootInitVenuePicker=init;
+    }else{
+      init();
+    }
+  }
+
+  window.enjoyFootVenuePicker=makeVenuePicker;
+  makeVenuePicker();
+  new MutationObserver(makeVenuePicker).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
+<script id="enjoyfoot-create-ad-fix">
+(function(){
+  function wireCreateButtons(){
+    const buttons=[...document.querySelectorAll('button,input[type="submit"],a')];
+    buttons.forEach(btn=>{
+      const text=(btn.textContent||btn.value||"").trim().toLowerCase();
+      if(!/(δημιουργία|δημιουργησε|create|publish|δημοσίευση)/.test(text)) return;
+      if(btn.dataset.createFix==="1") return;
+      btn.dataset.createFix="1";
+
+      btn.addEventListener("click", function(){
+        // Let the app's existing handler run first.
+        setTimeout(function(){
+          // If a venue picker exists, copy its selected Google values into common hidden fields.
+          const venueInput=document.querySelector('input[data-place-id]');
+          if(venueInput){
+            const form=btn.closest("form") || document.querySelector("form");
+            if(form){
+              const values={
+                venue_place_id:venueInput.dataset.placeId||"",
+                venue_lat:venueInput.dataset.lat||"",
+                venue_lng:venueInput.dataset.lng||"",
+                venue_address:venueInput.dataset.address||""
+              };
+              Object.entries(values).forEach(([name,value])=>{
+                let h=form.querySelector('[name="'+name+'"]');
+                if(!h){
+                  h=document.createElement("input");
+                  h.type="hidden"; h.name=name;
+                  form.appendChild(h);
+                }
+                h.value=value;
+              });
+            }
+          }
+        },50);
+      }, {capture:false});
+    });
+  }
+
+  wireCreateButtons();
+  new MutationObserver(wireCreateButtons).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+</body></html>
